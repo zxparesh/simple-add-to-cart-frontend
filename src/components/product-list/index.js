@@ -7,6 +7,9 @@ export default class ProductList extends Component {
     }
 
     render() {
+        const { cart, addToCart, increaseQty, decreaseQty } = this.props;
+        const cartMap = cart.items.reduce((obj, item) => ({...obj, [item.id]: item}), {});
+        console.log("render cartMap", cartMap);
         return (
             <div className="layout-row wrap justify-content-center flex-70 app-product-list">
                 {this.props.products.map((product, i) => {
@@ -23,26 +26,32 @@ export default class ProductList extends Component {
                                 </div>
                                 <div className="card-actions justify-content-center pa-4">
 
-                                    <button className="x-small outlined" data-testid="btn-item-add">
-                                        Add To Cart
-                                    </button>
+                                    {!cartMap[product.id] &&
+                                        <button className="x-small outlined" data-testid="btn-item-add" onClick={addToCart(product.id)}>
+                                            Add To Cart
+                                        </button>}
 
-                                    <div className="layout-row justify-content-between align-items-center">
-                                        <button className="x-small icon-only outlined"
-                                                data-testid="btn-quantity-subtract">
-                                            <i className="material-icons">remove</i>
-                                        </button>
+                                    {cartMap[product.id] &&
+                                        <div className="layout-row justify-content-between align-items-center">
+                                            <button className="x-small icon-only outlined"
+                                                    data-testid="btn-quantity-subtract"
+                                                    onClick={decreaseQty(product.id)}>
+                                                <i className="material-icons">remove</i>
+                                            </button>
 
-                                        <input type="number"
-                                               disabled
-                                               className="cart-quantity" data-testid="cart-quantity"/>
+                                            <input type="number"
+                                                disabled
+                                                value={cartMap[product.id].quantity}
+                                                className="cart-quantity"
+                                                data-testid="cart-quantity"/>
 
-                                        <button className="x-small icon-only outlined"
-                                                data-testid="btn-quantity-add">
-                                            <i className="material-icons">add</i>
-                                        </button>
-                                    </div>
-
+                                            <button className="x-small icon-only outlined"
+                                                    data-testid="btn-quantity-add"
+                                                    onClick={increaseQty(product.id)}>
+                                                <i className="material-icons">add</i>
+                                            </button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </section>

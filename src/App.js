@@ -19,17 +19,63 @@ class App extends Component {
             cart: {
                 items: []
             },
-            products
+            products,
         }
     }
 
+    addToCart = (id) => () => {
+        console.log("addToCart id", id)
+        const { cart, products } = this.state;
+        const prod = products.find(p => p.id === id);
+        cart.items.push({ id: prod.id, item: prod.name, quantity: 1 });
+        console.log("addToCart cart", cart)
+        this.setState({ cart });
+    }
+
+    increaseQty = (id) => () => {
+        console.log("increaseQty", id)
+        const { cart } = this.state;
+        const prodIndex = cart.items.findIndex(p => p.id === id);
+        console.log("increaseQty prodIndex", prodIndex)
+        if(prodIndex !== -1) {
+            const prodQty = cart.items[prodIndex].quantity;
+            console.log("increaseQty prodQty", prodQty)
+            cart.items[prodIndex].quantity = prodQty + 1;
+            console.log("increaseQty cart", cart)
+            this.setState({ cart });
+        }
+    }
+
+    decreaseQty = (id) => () => {
+        console.log("decreaseQty", id)
+        const { cart } = this.state;
+        const prodIndex = cart.items.findIndex(p => p.id === id);
+        console.log("decreaseQty prodIndex", prodIndex)
+        if(prodIndex !== -1) {
+            const prodQty = cart.items[prodIndex].quantity;
+            console.log("decreaseQty prodQty", prodQty)
+            if(prodQty > 1) {
+                cart.items[prodIndex].quantity = prodQty - 1;
+            } else {
+                cart.items.splice(prodIndex, 1);
+            }
+            console.log("decreaseQty cart", cart)
+            this.setState({ cart });
+        }
+    }
 
     render() {
         return (
             <div>
                 <h8k-navbar header={title}></h8k-navbar>
                 <div className="layout-row shop-component">
-                    <ProductList products={this.state.products}/>
+                    <ProductList
+                        products={this.state.products}
+                        cart={this.state.cart}
+                        addToCart={this.addToCart}
+                        increaseQty={this.increaseQty}
+                        decreaseQty={this.decreaseQty}
+                    />
                     <Cart cart={this.state.cart}/>
                 </div>
             </div>
